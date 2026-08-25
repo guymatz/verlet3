@@ -1,0 +1,16 @@
+name = "verlet3"
+version = "0.1.0"
+license = "license"
+author = "Guy Matz"
+maintainer = "gmatz@matz.org"
+copyright = "Copyright 2026, Guy Matz"
+
+[dependencies]
+stdlib = "*"
+
+[dev-dependencies]
+test-drive.git = "https://github.com/fortran-lang/test-drive"
+test-drive.tag = "v0.6.1"
+
+jpca15.git = "https://github.com/guymatz/jpca15.git"
+jpca15.branch = "main"

@@ -1,0 +1,98 @@
+module test_verlet
+    use kinds, ONLY: wp => dp
+    use verlet
+    use funit
+
+    implicit none
+
+    real(KIND=wp), DIMENSION(3, 3) :: x, v, f, fnext, points, forces
+    real(KIND=wp), DIMENSION(3) :: mass
+    real(KIND=wp), DIMENSION(3) :: ser
+    real(KIND=wp), DIMENSION(3, 3) :: ser_delta
+    real(KIND=wp) :: distance_with_delta
+    real(KIND=wp) :: tau, delta
+    real(KIND=wp) :: tol ! tolerance for assertEqual tests
+
+    contains
+
+    @test
+    subroutine test_eudist_p1_p2()
+        @assertEqual(20., eudist(x(1, :), x(2, :)), tolerance=tol)
+    end subroutine test_eudist_p1_p2
+
+    @test
+    subroutine test_eudist_p2_p1()
+        @assertEqual(20., eudist(x(2, :), x(1, :)), tolerance=tol)
+    end subroutine test_eudist_p2_p1
+
+    !
+    ! !! TESTS
+    !
+    ! ! Initial locations & Distances
+    @test
+    subroutine test_eudist_with_delta()
+        @assertEqual(19.5, eudist_with_delta(x(1, :), x(2, :), delta, 1), tolerance=tol)
+        @assertEqual(20.746, eudist_with_delta(x(1, :), x(3, :), delta, 2), tolerance=tol)
+        @assertEqual(0.893, eudist_with_delta(x(2, :), x(3, :), delta, 3), tolerance=tol)
+    end subroutine test_eudist_with_delta
+
+    @test
+    subroutine test_get_ser()
+        call get_ser(x(1, :), x(2, :), x(3, :), ser)
+        @assertEqual((/20.0_wp, 20.74_wp, 0.74_wp/), ser, tolerance=tol)
+    end subroutine test_get_ser
+
+!    subroutine test_get_delta_ser()
+!        call get_delta_ser(x(1, :), x(2, :), x(3, :), delta, ser)
+!        @assertEqual((/20.0_wp, 20.74_wp, 0.74_wp/), ser, tolerance=tol)
+!    end subroutine test_get_delta_ser
+    ! ! Test get_delta_ser
+    !     ! subroutine get_delta_ser(p1, p2, p3, delta, ser)
+    !     print *, ""
+    !     print *, "======== Test get_delta_ser: Gets distances between 3 atoms as (AB, AC, BC) after adding small delta in each dimension"
+    !     print *, "delta = ", delta
+    !         print *, "BEFORE get_delta_ser: Points"
+    !         print *, "      1 :", x(1, :)
+    !         print *, "      2 :", x(2, :)
+    !         print *, "      3 :", x(3, :)
+    !     print *, "                             x                             y                   z"
+    !     CALL get_delta_ser( x, delta, ser_delta)
+    !     do i = 1, 3, 1
+    !         print *, "    Location :", i, ":", x(i, :)
+    !         print *, "    Distance :", i, ":", ser_delta(i, :)
+    !     end do
+
+    @test
+    subroutine test_compute_force()
+        call compute_force(x, delta, forces)
+        @assertEqual((/7.5123e-007, -6.7676E-009, -6.7677E-009/), forces(1, :), tolerance=tol)
+        @assertEqual((/123.386101, -6.26126, -6.26126/), forces(2, :), tolerance=tol)
+        @assertEqual((/-11.178783, -6.26126, -6.26126/), forces(3, :), tolerance=tol)
+    end subroutine test_compute_force
+
+    @before
+    subroutine setup()
+        use kinds, ONLY: wp => dp
+
+        ! Initialization
+        tol = 0.0001_wp
+        tau = 0.2_wp                                     ! tau
+        delta = 0.5_wp                                          ! delta
+        !delta = 1                                          ! delta
+        ! atom A
+        mass(1) = 1.0080_wp
+        x(1, :) = (/-10.0, 0.0, 0.0/)          ! x, y, z
+        v(1, :) = (/1.0, 0.0, 0.0/)        ! vx, vy, vz
+        ! atom B
+        mass(2) = 1.0080_wp                             ! m, x, y, z, vx, vy, vz
+        x(2, :) = (/10.0, 0.0, 0.0/)           ! m, x, y, z, vx, vy, vz
+        v(2, :) = (/0.0, 0.0, 0.0/)        ! m, x, y, z, vx, vy, vz
+        ! atom C
+        mass(3) = 1.0080_wp                           ! m, x, y, z, vx, vy, vz
+        x(3, :) = (/10.74, 0.0, 0.0/)           ! m, x, y, z, vx, vy, vz
+        !x(3, :) = (/11.0, 0.0, 0.0/)           ! m, x, y, z, vx, vy, vz
+        v(3, :) = (/0.0, 0.0, 0.0/)        ! m, x, y, z, vx, vy, vz
+!        print *, "SETUP completed"
+    end subroutine setup
+
+end module test_verlet
