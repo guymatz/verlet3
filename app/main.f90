@@ -7,7 +7,7 @@ program main
     !use stdlib_logger, only: global => global_logger
     use stdlib_logger
     use kinds, ONLY: wp => dp
-    use verlet3
+    use verlet3, ONLY: verlet3_init, compute_force
     implicit none
 
 
@@ -62,7 +62,8 @@ program main
     !call global%configure(time_stamp=.true., label=.true., units=[output_unit])
     call global_logger%configure(indent=.true., max_width=72)
     call global_logger%configure(level = NONE_LEVEL)
-    call global_logger%log_information("POOP")
+    ! for logging in verlet3 module.  Start false, then modify, if needed
+    call verlet3_init(.false.)
 
 ! Process command-line args
     i = 0
@@ -74,6 +75,8 @@ program main
         ! Delta - defaults to 0.1 (see above)
         IF (arg == "-v") THEN
             call global_logger%configure(level = ALL_LEVEL)
+            ! for logging in verlet3 module
+            call verlet3_init(.true.)
         ELSE IF (arg == "-d") THEN
             ! delta
             i = i + 1
@@ -102,9 +105,7 @@ program main
             file_name = trim(arg)
             INQUIRE (FILE=file_name, EXIST=OK)
             if (.NOT. OK) THEN
-                write(log_msg, '(A)') "ERROR!!  File does not exist: ", file_name
-                CALL global_logger%log_warning(log_msg)
-                write(log_msg, '(A)') '(A,I0)', "main +", __LINE__
+                write(log_msg, '(A, A)') "ERROR!!  File does not exist: ", file_name
                 CALL global_logger%log_warning(log_msg)
                 STOP __LINE__ - 1
             END IF
@@ -113,23 +114,23 @@ program main
             CALL global_logger%log_warning(log_msg)
             XYZ = .TRUE.
         ELSE
-            write(log_msg, '(A)') "Arg used: ", arg
+            write(log_msg, '(A, A)') "Unknown Arg used: ", arg
             CALL global_logger%log_warning(log_msg)
             write(log_msg, '(A)') "Usage: verlet3 [ -h ] [ -f data_file ]  [ -d delta ] [ -s steps ] [-x]"
             CALL global_logger%log_warning(log_msg)
             write(log_msg, '(A)') "DEFAULTS:"
             CALL global_logger%log_warning(log_msg)
-            write(log_msg, '(A)') '(A, A)', "    data_file - ", file_name
+            write(log_msg, '(A, A)') "    data_file - ", file_name
             CALL global_logger%log_warning(log_msg)
-            write(log_msg, '(A)') '(A, F0.9)', "        delta - ", delta
+            write(log_msg, '(A, F0.9)') "        delta - ", delta
             CALL global_logger%log_warning(log_msg)
-            write(log_msg, '(A)') '(A, F0.9)', "        tau - ", tau
+            write(log_msg, '(A, F0.9)') "        tau - ", tau
             CALL global_logger%log_warning(log_msg)
-            write(log_msg, '(A)') '(A, I0)', "        steps - ", nk
+            write(log_msg, '(A, I0)') "        steps - ", nk
             CALL global_logger%log_warning(log_msg)
-            write(log_msg, '(A)') '(L1)', " Create xyz file - ", XYZ
+            write(log_msg, '(A, L1)') " Create xyz file - ", XYZ
             CALL global_logger%log_warning(log_msg)
-            write(log_msg, '(A)') '(A,I0)', "main +", __LINE__
+            write(log_msg, '(A, I0)') "main +", __LINE__ + 1
             CALL global_logger%log_warning(log_msg)
             STOP __LINE__ - 1
         END IF
