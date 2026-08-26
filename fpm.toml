@@ -7,10 +7,9 @@ copyright = "Copyright 2026, Guy Matz"
 
 [dependencies]
 stdlib = "*"
+jpca15.git = "https://github.com/guymatz/jpca15.git"
+jpca15.branch = "main"
 
 [dev-dependencies]
 test-drive.git = "https://github.com/fortran-lang/test-drive"
 test-drive.tag = "v0.6.1"
-
-jpca15.git = "https://github.com/guymatz/jpca15.git"
-jpca15.branch = "main"

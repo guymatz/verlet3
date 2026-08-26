@@ -21,7 +21,7 @@ program main
     ! For requesting xyz file output
     LOGICAL :: XYZ = .FALSE.
     CHARACTER(len=32) :: arg
-    CHARACTER(len=32) :: file_name = "atoms.dat"
+    CHARACTER(len=32) :: file_name = "app/atoms.dat"
     !integer :: arg_len
     !integer :: status
     real(KIND=wp), DIMENSION(:, :), ALLOCATABLE :: x, v, f, fnext
