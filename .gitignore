@@ -1,6 +1,9 @@
 # Prerequisites
 *.d
 
+# output file type for VMD viewer
+*.xyz
+
 # Compiled Object files
 *.slo
 *.lo

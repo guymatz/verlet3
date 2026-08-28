@@ -69,21 +69,21 @@ contains
     fx%v(2, :) = (/0.0, 0.0, 0.0/)        ! m, x, y, z, vx, vy, vz
     ! atom C
     fx%mass(3) = 1.0080_wp                           ! m, x, y, z, vx, vy, vz
-    fx%x(3, :) = (/10.74, 0.0, 0.0/)           ! m, x, y, z, vx, vy, vz
+    fx%x(3, :) = (/11.40065, 0.0, 0.0/)           ! m, x, y, z, vx, vy, vz
     !x(3, :) = (/11.0, 0.0, 0.0/)           ! m, x, y, z, vx, vy, vz
     fx%v(3, :) = (/0.0, 0.0, 0.0/)        ! m, x, y, z, vx, vy, vz
 
     fx%expected_eudist = 20.0_wp
 
     fx%expected_eudist_with_delta_12_1 = 19.5_wp
-    fx%expected_eudist_with_delta_13_2 = 20.746_wp
-    fx%expected_eudist_with_delta_23_3 = 0.893
+    fx%expected_eudist_with_delta_13_2 = 21.40649_wp
+    fx%expected_eudist_with_delta_23_3 = 1.487219_wp
 
-    fx%expected_get_ser = (/20.0_wp, 20.74_wp, 0.74_wp/)
+    fx%expected_get_ser = (/20.0_wp, 21.40065_wp, 1.40065_wp/)
     !fx%expected_get_ser_delta
     fx%expected_forces(1, :) = (/7.5123e-007, -6.7676E-009, -6.7677E-009/)
-    fx%expected_forces(2, :) = (/123.386101, -6.26126, -6.26126/)
-    fx%expected_forces(3, :) = (/-11.178783, -6.26126, -6.26126/)
+    fx%expected_forces(2, :) = (/5.026129, 0.07112365, 0.07112365/)
+    fx%expected_forces(3, :) = (/1.505611, 0.07112365, 0.07112365/)
 
   end subroutine setup
 

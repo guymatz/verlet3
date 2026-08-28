@@ -10,7 +10,6 @@ program main
     use verlet3, ONLY: verlet3_init, compute_force
     implicit none
 
-
 ! vars
     !  for logging
     character(len=100) :: log_msg
@@ -60,7 +59,7 @@ program main
 
 ! pre-processing config
     !call global%configure(time_stamp=.true., label=.true., units=[output_unit])
-    call global_logger%configure(indent=.true., max_width=72)
+    call global_logger%configure(indent=.true., max_width=100)
     call global_logger%configure(level = NONE_LEVEL)
     ! for logging in verlet3 module.  Start false, then modify, if needed
     call verlet3_init(.false.)
@@ -75,14 +74,14 @@ program main
         ! Delta - defaults to 0.1 (see above)
         IF (arg == "-v") THEN
             call global_logger%configure(level = ALL_LEVEL)
-            ! for logging in verlet3 module
-            call verlet3_init(.true.)
+            ! for logging in verlet3 module.  DO I NEED THIS?
+!            call verlet3_init(.true.)
         ELSE IF (arg == "-d") THEN
             ! delta
             i = i + 1
             CALL get_command_argument(i, arg)
             write(log_msg, '(A, A)') "arg -d: ", arg
-            CALL global_logger%log_warning(log_msg)
+            ! CALL global_logger%log_warning(log_msg)
             read (arg, '(f33.32)') delta_cli
             IF (delta_cli <= 0.0) THEN
                 print *, "Delta too small!"
@@ -106,32 +105,32 @@ program main
             INQUIRE (FILE=file_name, EXIST=OK)
             if (.NOT. OK) THEN
                 write(log_msg, '(A, A)') "ERROR!!  File does not exist: ", file_name
-                CALL global_logger%log_warning(log_msg)
+                ! CALL global_logger%log_warning(log_msg)
                 STOP __LINE__ - 1
             END IF
         ELSE IF (arg == "-x") THEN
-            ! write(log_msg, '(A)') xyz format
-            CALL global_logger%log_warning(log_msg)
+            write(log_msg, '(A)') "xyz format"
+            ! CALL global_logger%log_warning(log_msg)
             XYZ = .TRUE.
         ELSE
             write(log_msg, '(A, A)') "Unknown Arg used: ", arg
-            CALL global_logger%log_warning(log_msg)
+            ! CALL global_logger%log_warning(log_msg)
             write(log_msg, '(A)') "Usage: verlet3 [ -h ] [ -f data_file ]  [ -d delta ] [ -s steps ] [-x]"
-            CALL global_logger%log_warning(log_msg)
+            ! CALL global_logger%log_warning(log_msg)
             write(log_msg, '(A)') "DEFAULTS:"
-            CALL global_logger%log_warning(log_msg)
+            ! CALL global_logger%log_warning(log_msg)
             write(log_msg, '(A, A)') "    data_file - ", file_name
-            CALL global_logger%log_warning(log_msg)
+            ! CALL global_logger%log_warning(log_msg)
             write(log_msg, '(A, F0.9)') "        delta - ", delta
-            CALL global_logger%log_warning(log_msg)
+            ! CALL global_logger%log_warning(log_msg)
             write(log_msg, '(A, F0.9)') "        tau - ", tau
-            CALL global_logger%log_warning(log_msg)
+            ! CALL global_logger%log_warning(log_msg)
             write(log_msg, '(A, I0)') "        steps - ", nk
-            CALL global_logger%log_warning(log_msg)
+            ! CALL global_logger%log_warning(log_msg)
             write(log_msg, '(A, L1)') " Create xyz file - ", XYZ
-            CALL global_logger%log_warning(log_msg)
+            ! CALL global_logger%log_warning(log_msg)
             write(log_msg, '(A, I0)') "main +", __LINE__ + 1
-            CALL global_logger%log_warning(log_msg)
+            ! CALL global_logger%log_warning(log_msg)
             STOP __LINE__ - 1
         END IF
     END DO
@@ -143,7 +142,7 @@ program main
     read (unit=11, FMT=*) num_atoms
     !write(log_msg, '(A)') nk, tau, sigma, epsilon, num_atoms
     write(log_msg, '(A, I0)') "Number of atoms: ", num_atoms
-    CALL global_logger%log_warning(log_msg)
+    ! CALL global_logger%log_warning(log_msg)
 
     ! Let the command-line `steps` override nk, if it's set
     if (nk_cli > 0) then
@@ -159,15 +158,15 @@ program main
     end if
 
     write(log_msg, '(A, F5.1)') "Will use delta: ", delta
-    CALL global_logger%log_warning(log_msg)
+    ! CALL global_logger%log_warning(log_msg)
     write(log_msg, '(A, A)') "Will use file: ", file_name
-    CALL global_logger%log_warning(log_msg)
+    ! CALL global_logger%log_warning(log_msg)
     write(log_msg, '(A, I0)') "Will use num steps: ", nk
-    CALL global_logger%log_warning(log_msg)
+    ! CALL global_logger%log_warning(log_msg)
     write(log_msg, '(A, F5.1)') "Will use tau: ", tau
-    CALL global_logger%log_warning(log_msg)
+    ! CALL global_logger%log_warning(log_msg)
     write(log_msg, '(A, L)') "Create XYZ file: ", XYZ
-    CALL global_logger%log_warning(log_msg)
+    ! CALL global_logger%log_warning(log_msg)
 
     ! Allocate arrays for position, velocity, force & mass
     ! Position
@@ -187,18 +186,18 @@ program main
         x(i, :) = (/ax, ay, az/)
         v(i, :) = (/vx, vy, vz/)
         write(log_msg, '(A, I0, A)') 'Particle ', i, ': '
-        CALL global_logger%log_information(log_msg)
+        ! CALL global_logger%log_information(log_msg)
         write(log_msg, '(A, F5.1)') '  Mass: ', mass(i)
-        CALL global_logger%log_information(log_msg)
+        ! CALL global_logger%log_information(log_msg)
         write(log_msg, '(A, 3F5.1)') '  Starting Position: ', x(i, :)
-        CALL global_logger%log_information(log_msg)
+        ! CALL global_logger%log_information(log_msg)
         write(log_msg, '(A, 3F5.1)') '  Initial Velocity: ', v(i, :)
-        CALL global_logger%log_information(log_msg)
+        ! CALL global_logger%log_information(log_msg)
     end do
     close (unit=11)
 
-    ! write(log_msg, '(A)') initial output for XYZ data file -
-    CALL global_logger%log_warning(log_msg)
+    write(log_msg, '(A)') "initial output for XYZ data file -"
+    ! CALL global_logger%log_warning(log_msg)
     ! https://en.wikipedia.org/wiki/XYZ_file_format
     if (XYZ) then
         print *, num_atoms
@@ -207,98 +206,97 @@ program main
         print *, "atom2", x(2, :)
         print *, "atom3", x(3, :)
     end if
-! Initial Force for particles
+
+! Steps here found Chap 7, on p. 61 of ``Chemistry at the Fronteir...'' by Rampino
+  ! Step 0: Calculate initial force on all particles
+    ! Initial Force for particles
     call compute_force(x, delta, f)
     write(log_msg, '(A)') " ***** Initial Positions / Forces: "
-    CALL global_logger%log_warning(log_msg)
-    do i = 1, 3, 1
+    ! CALL global_logger%log_warning(log_msg)
+    do i = 1, size(x, 1), 1
         write(log_msg, '(A, I0)') "  Atom: ", i
         CALL global_logger%log_information(log_msg)
         write(log_msg, '(A)') "          X    Y    Z"
         CALL global_logger%log_information(log_msg)
-        write(log_msg, '(A, 3F5.1)') "     x: ", x(i, :)
+        write(log_msg, '(A, 3F15.9)') "     x: ", x(i, :)
         CALL global_logger%log_information(log_msg)
-        write(log_msg, '(A, 3F5.1)') "     f: ", f(i, :)
+        write(log_msg, '(A, 3F15.9)') "     f: ", f(i, :)
         CALL global_logger%log_information(log_msg)
     end do
 
-  ! Iterate!
-    ! write(log_msg, '(A)') "  nk:", nk
-    CALL global_logger%log_warning(log_msg)
+  ! Iterate!  For nk # of steps
     do k = 1, nk, 1
-        ! Calculate x^{(a)}_{k+1}
-        ! Calculate new position
-
         do atom_num = 1, 3, 1
             write(log_msg, '(A, I0, A, 3F5.1)') " ***** x before: ", atom_num, " - ", x(atom_num, :) 
-            CALL global_logger%log_warning(log_msg)
+            ! CALL global_logger%log_warning(log_msg)
         end do
-        do atom_num = 1, 3, 1
-            do dimn = 1, 3, 1
+        do atom_num = 1, size(x, 1), 1
+            do dimn = 1, size(x, 2), 1
+                write(log_msg, '(A)') "NUMS: "
+                ! CALL global_logger%log_warning(log_msg)
+                write(log_msg, '(A, F15.10)') "      x: ", x(atom_num, dimn)
+                ! CALL global_logger%log_warning(log_msg)
+                write(log_msg, '(A, F15.10)') "      t: ", tau
+                ! CALL global_logger%log_warning(log_msg)
+                write(log_msg, '(A, F15.10)') "      v: ", v(atom_num, dimn)
+                ! CALL global_logger%log_warning(log_msg)
+                write(log_msg, '(A, F15.10)') "      f: ", f(atom_num, dimn)
+                ! CALL global_logger%log_warning(log_msg)
+                write(log_msg, '(A, F15.10)') "      m: ", mass(atom_num)
+                ! CALL global_logger%log_warning(log_msg)
+                write(log_msg, '(A, F15.10)') "     l1: ", tau * v(atom_num, dimn)
+                ! CALL global_logger%log_warning(log_msg)
+                write(log_msg, '(A, F15.10)') "     l2: ", x(atom_num, dimn) + tau * v(atom_num, dimn)
+                ! CALL global_logger%log_warning(log_msg)
+                write(log_msg, '(A, F15.10)') "   l3-1: ", f(atom_num, dimn)
+                ! CALL global_logger%log_warning(log_msg)
+                write(log_msg, '(A, F15.10)') "   l3-2: ", 2 * mass(atom_num)
+                ! CALL global_logger%log_warning(log_msg)
+                write(log_msg, '(A, F15.10)') "     l3: ", f(atom_num, dimn) / (2 * mass(atom_num)) * tau**2
+                ! CALL global_logger%log_warning(log_msg)
 
-                ! write(log_msg, '(A)') "NUMS: ", atom_num, dimn
-                CALL global_logger%log_warning(log_msg)
-                ! write(log_msg, '(A)') "      x: ", x(atom_num, dimn)
-                CALL global_logger%log_warning(log_msg)
-                ! write(log_msg, '(A)') "      t: ", tau
-                CALL global_logger%log_warning(log_msg)
-                ! write(log_msg, '(A)') "      v: ", v(atom_num, dimn)
-                CALL global_logger%log_warning(log_msg)
-                ! write(log_msg, '(A)') "      f: ", f(atom_num, dimn)
-                CALL global_logger%log_warning(log_msg)
-                ! write(log_msg, '(A)') "      m: ", mass(atom_num)
-                CALL global_logger%log_warning(log_msg)
-                ! write(log_msg, '(A)') "     l1: ", tau * v(atom_num, dimn)
-                CALL global_logger%log_warning(log_msg)
-                ! write(log_msg, '(A)') "     l2: ", x(atom_num, dimn) + tau * v(atom_num, dimn)
-                CALL global_logger%log_warning(log_msg)
-                ! write(log_msg, '(A)') "   l3-1: ", f(atom_num, dimn)
-                CALL global_logger%log_warning(log_msg)
-                ! write(log_msg, '(A)') "   l3-2: ", 2 * mass(atom_num)
-                CALL global_logger%log_warning(log_msg)
-                ! write(log_msg, '(A)') "     l3: ", f(atom_num, dimn) / (2 * mass(atom_num)) * tau**2
-                CALL global_logger%log_warning(log_msg)
-
+  ! Step 1: Calculate x_{k+1}^{particle}
                 x(atom_num, dimn) = x(atom_num, dimn) + tau * v(atom_num, dimn) + &
-                                    (f(atom_num, dimn) / (2 * mass(atom_num))) * tau**2
+                                     tau**2 * (f(atom_num, dimn) / (2 * mass(atom_num)))
                 write(log_msg, '(A, I0, A, I0, A, F5.1)') "  new x: ", atom_num, ", ", dimn, ", ", x(atom_num, dimn)
-                CALL global_logger%log_warning(log_msg)
+                ! CALL global_logger%log_warning(log_msg)
             end do
         end do
-        do atom_num = 1, 3, 1
+        do atom_num = 1, size(x, 1)
             write(log_msg, '(A, I0, 3F5.1)') " ***** x AFTER: ", atom_num, x(atom_num, :) 
-            CALL global_logger%log_warning(log_msg)
+            ! CALL global_logger%log_warning(log_msg)
         end do
-        ! calculate fnext
+  ! Step 2: Calculate new force for each dimension - f_{k+1}^{particle, dimension}
         call compute_force(x, delta, fnext)
-        do atom_num = 1, 3, 1
-            write(log_msg, '(A, I0, 3F5.1)') "fnext: ", atom_num, fnext(atom_num, :) 
-            CALL global_logger%log_warning(log_msg)
+        do atom_num = 1, size(x, 1)
+            write(log_msg, '(A, I0, 3F15.9)') "fnext: ", atom_num, fnext(atom_num, :) 
+            ! CALL global_logger%log_warning(log_msg)
         end do
-        ! Calculate new velocity
+  ! Step 3: Calculate velocity for each dimension - v_{k+1}^{particle, dimension}
         ! A
-        do atom_num = 1, 3, 1
-            do dimn = 1, 3, 1
+        do atom_num = 1, size(x, 1)
+            do dimn = 1, size(x, 2)
                 v(atom_num, dimn) = v(atom_num, dimn) + &
-                                    tau / (2 * mass(atom_num)) * (f(atom_num, dimn) + &
-                                    fnext(atom_num, dimn))
+                                    (tau / (2 * mass(atom_num))) * &
+                                    (f(atom_num, dimn) + fnext(atom_num, dimn))
             end do
         end do
 
+        ! Print out the coordinates in XYZ format, if requested (with -x)
         if (XYZ) then
             print *, num_atoms
             print *, "step:", k
-            print *, "atom1", x(1, :)
-            print *, "atom2", x(2, :)
-            print *, "atom3", x(3, :)
+            do atom_num = 1, size(x, 1)
+                write(*, '(A, I0, A5, 3F20.10)') "atom", atom_num, "", x(atom_num, :)
+            end do
         end if
 
-        ! Assign f = fnext
+  ! Step 4: Assign the value of f_{k+1}^{particle} to f_{k}^{particle}
         do atom_num = 1, 3, 1
           do dimn = 1, 3, 1
             f(atom_num, dimn) = fnext(atom_num, dimn)
-            ! write(log_msg, '(A)') atom_num, dimn, f(atom_num, dimn) 
-            CALL global_logger%log_warning(log_msg)
+            write(log_msg, '(I5, I5, F20.15)') atom_num, dimn, f(atom_num, dimn) 
+            ! CALL global_logger%log_warning(log_msg)
           end do
         end do
 
