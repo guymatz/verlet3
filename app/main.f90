@@ -58,7 +58,7 @@ program main
     !real (KIND = wp), DIMENSION(7) :: p_a, p_b ! our two particles
 
 ! pre-processing config
-    !call global%configure(time_stamp=.true., label=.true., units=[output_unit])
+    call global_logger%configure(time_stamp=.false.)
     call global_logger%configure(indent=.true., max_width=100)
     call global_logger%configure(level = NONE_LEVEL)
     ! for logging in verlet3 module.  Start false, then modify, if needed
@@ -113,24 +113,27 @@ program main
             ! CALL global_logger%log_warning(log_msg)
             XYZ = .TRUE.
         ELSE
+            call global_logger%configure(indent=.true., max_width=110)
+            call global_logger%configure(time_stamp=.false.)
+            call global_logger%configure(level = ALL_LEVEL)
             write(log_msg, '(A, A)') "Unknown Arg used: ", arg
-            ! CALL global_logger%log_warning(log_msg)
+            CALL global_logger%log_error(log_msg)
             write(log_msg, '(A)') "Usage: verlet3 [ -h ] [ -f data_file ]  [ -d delta ] [ -s steps ] [-x]"
-            ! CALL global_logger%log_warning(log_msg)
+            CALL global_logger%log_error(log_msg)
             write(log_msg, '(A)') "DEFAULTS:"
-            ! CALL global_logger%log_warning(log_msg)
-            write(log_msg, '(A, A)') "    data_file - ", file_name
-            ! CALL global_logger%log_warning(log_msg)
-            write(log_msg, '(A, F0.9)') "        delta - ", delta
-            ! CALL global_logger%log_warning(log_msg)
-            write(log_msg, '(A, F0.9)') "        tau - ", tau
-            ! CALL global_logger%log_warning(log_msg)
-            write(log_msg, '(A, I0)') "        steps - ", nk
-            ! CALL global_logger%log_warning(log_msg)
-            write(log_msg, '(A, L1)') " Create xyz file - ", XYZ
-            ! CALL global_logger%log_warning(log_msg)
-            write(log_msg, '(A, I0)') "main +", __LINE__ + 1
-            ! CALL global_logger%log_warning(log_msg)
+            CALL global_logger%log_error(log_msg)
+            write(log_msg, '(A20, A)') "data_file: ", file_name
+            CALL global_logger%log_error(log_msg)
+            write(log_msg, '(A20, F0.9)') "delta: ", delta
+            CALL global_logger%log_error(log_msg)
+            write(log_msg, '(A20, F0.9)') "tau: ", tau
+            CALL global_logger%log_error(log_msg)
+            write(log_msg, '(A20, I0)') "steps: ", nk
+            CALL global_logger%log_error(log_msg)
+            write(log_msg, '(A20, L1)') "Create xyz file: ", XYZ
+            CALL global_logger%log_error(log_msg)
+            !write(log_msg, '(A, I0)') "main +", __LINE__ + 1
+            !CALL global_logger%log_warning(log_msg)
             STOP __LINE__ - 1
         END IF
     END DO

@@ -46,18 +46,18 @@ contains
         write(log_msg, '(A)') "==== In get_ser . . . "
         call global_logger%log_warning(log_msg)
 
-        write(log_msg, '(A, 3F5.1)') "P1 in get_ser: ", p1
+        write(log_msg, '(A, 3F12.5)') "P1 in get_ser:  ", p1
         call global_logger%log_warning(log_msg)
-        write(log_msg, '(A, 3F5.1)') "P2 in get_ser: ", p2
+        write(log_msg, '(A, 3F12.5)') "P2 in get_ser:  ", p2
         call global_logger%log_warning(log_msg)
-        write(log_msg, '(A, 3F5.1)') "P3 in get_ser: ", p3
+        write(log_msg, '(A, 3F12.5)') "P3 in get_ser:  ", p3
         call global_logger%log_warning(log_msg)
 
         !ser(1) = eudist(p1, p2)
         ser(1) = eudist(p1, p2)
         ser(2) = eudist(p1, p3)
         ser(3) = eudist(p2, p3)
-        write(log_msg, '(A, 3F5.1)') "SER in get_ser: ", ser
+        write(log_msg, '(A, 3F12.5)') "SER in get_ser: ", ser
         call global_logger%log_warning(log_msg)
     end subroutine get_ser
 

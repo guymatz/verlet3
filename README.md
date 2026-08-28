@@ -49,7 +49,10 @@ I am starting with the following initial conditions (in atoms.dat):
 ```
 
 ### RUN
-fpm run -- -v -f app/atoms.dat -s 1
+For command-line usage:
+fpm run -- -h
+
+fpm run -- -v -f app/atoms.dat -x
 
 ### TEST
 fpm test
