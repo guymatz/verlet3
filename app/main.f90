@@ -18,9 +18,9 @@ program main
 
     LOGICAL :: OK = .FALSE.
     ! For requesting xyz file output
-    LOGICAL :: XYZ = .FALSE.
+    LOGICAL :: XYZ = .TRUE.
     CHARACTER(len=32) :: arg
-    CHARACTER(len=32) :: file_name = "app/atoms.dat"
+    CHARACTER(len=32) :: file_name = "data/atoms.dat"
     !integer :: arg_len
     !integer :: status
     real(KIND=wp), DIMENSION(:, :), ALLOCATABLE :: x, v, f, fnext
@@ -108,17 +108,17 @@ program main
                 ! CALL global_logger%log_warning(log_msg)
                 STOP __LINE__ - 1
             END IF
-        ELSE IF (arg == "-x") THEN
-            write(log_msg, '(A)') "xyz format"
-            ! CALL global_logger%log_warning(log_msg)
-            XYZ = .TRUE.
+        ELSE IF (arg == "-X") THEN
+            write(log_msg, '(A)') "No output in XYZ format"
+            CALL global_logger%log_warning(log_msg)
+            XYZ = .FALSE.
         ELSE
             call global_logger%configure(indent=.true., max_width=110)
             call global_logger%configure(time_stamp=.false.)
             call global_logger%configure(level = ALL_LEVEL)
             write(log_msg, '(A, A)') "Unknown Arg used: ", arg
             CALL global_logger%log_error(log_msg)
-            write(log_msg, '(A)') "Usage: verlet3 [ -h ] [ -f data_file ]  [ -d delta ] [ -s steps ] [-x]"
+            write(log_msg, '(A)') "Usage: verlet3 [ -h ] [ -f data_file ]  [ -d delta ] [ -s steps ] [-X]"
             CALL global_logger%log_error(log_msg)
             write(log_msg, '(A)') "DEFAULTS:"
             CALL global_logger%log_error(log_msg)
@@ -130,7 +130,7 @@ program main
             CALL global_logger%log_error(log_msg)
             write(log_msg, '(A20, I0)') "steps: ", nk
             CALL global_logger%log_error(log_msg)
-            write(log_msg, '(A20, L1)') "Create xyz file: ", XYZ
+            write(log_msg, '(A20, L1)') "Ouput XYZ data: ", XYZ
             CALL global_logger%log_error(log_msg)
             !write(log_msg, '(A, I0)') "main +", __LINE__ + 1
             !CALL global_logger%log_warning(log_msg)
