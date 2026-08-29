@@ -230,7 +230,7 @@ contains
     ! x
         delta_ser = (/delta_d_(1, 1), delta_d_(2, 1), d_(3)/)
         call comp_pe(delta_ser, delta_er, delta_der)
-        forces(1, 1) = (delta_er - er) / delta
+        forces(1, 1) = - (delta_er - er) / delta
 
         write(log_msg, '(A, T25, F15.9, F15.9, F15.9)') "Ax", delta_ser(1), delta_ser(2), delta_ser(3)
         call global_logger%log_warning(log_msg)
@@ -246,7 +246,7 @@ contains
     ! y
         delta_ser = (/delta_d_(1, 2), delta_d_(2, 2), d_(3)/)
         call comp_pe(delta_ser, delta_er, delta_der)
-        forces(1, 2) = (delta_er - er) / delta
+        forces(1, 2) = - (delta_er - er) / delta
 
         write(log_msg, '(A, T35, F7.2, F10.2, F8.2)') "Ay", delta_ser(1), delta_ser(2), delta_ser(3)
         call global_logger%log_warning(log_msg)
@@ -328,7 +328,7 @@ contains
       ! x
         delta_ser = (/d_(1), delta_d_(5, 1), delta_d_(6, 1)/)
         call comp_pe(delta_ser, delta_er, delta_der)
-        forces(3, 1) = (delta_er - er) / delta
+        forces(3, 1) = - (delta_er - er) / delta
 
         write(log_msg, '(A, T35, F7.2, F10.2, F8.2)') "Cx", delta_ser(1), delta_ser(2), delta_ser(3)
         call global_logger%log_warning(log_msg)
