@@ -167,6 +167,10 @@ contains
         call comp_pe(ser, er, der)
         write(log_msg, '(A, F15.9)') "    er:", er
         call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, 3F15.9)') "    der:", der
+        call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, F15.9)') "    sum der:", sum(der)
+        call global_logger%log_warning(log_msg)
 
       ! Step 3 of calculating forces: - get euclidean distances between points + delta
         ! do dimn = 1, 3
@@ -240,6 +244,10 @@ contains
         call global_logger%log_warning(log_msg)
         write(log_msg, '(A, 3F15.10)') "  er:", er
         call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, 3F15.10)') " delta_der:", delta_der
+        call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, F15.10)') " sum delta_der:", sum(delta_der)
+        call global_logger%log_warning(log_msg)
         write(log_msg, '(A, F15.10)') "  forces(1, 1):", forces(1, 1)
         call global_logger%log_warning(log_msg)
 
@@ -256,13 +264,17 @@ contains
         call global_logger%log_warning(log_msg)
         write(log_msg, '(A, F15.10)') "  er:", er
         call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, 3F15.10)') " delta_der:", delta_der
+        call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, F15.10)') " sum delta_der:", sum(delta_der)
+        call global_logger%log_warning(log_msg)
         write(log_msg, '(A, F15.10)') "  forces(1, 2):", forces(1, 2)
         call global_logger%log_warning(log_msg)
 
     ! z
         delta_ser = (/delta_d_(1, 3), delta_d_(2, 3), d_(3)/)
         call comp_pe(delta_ser, delta_er, delta_der)
-        forces(1, 3) = (delta_er - er) / delta
+        forces(1, 3) = - (delta_er - er) / delta
 
         write(log_msg, '(A, T35, F7.2, F10.2, F8.2)') "Az", delta_ser(1), delta_ser(2), delta_ser(3)
         call global_logger%log_warning(log_msg)
@@ -272,13 +284,17 @@ contains
         call global_logger%log_warning(log_msg)
         write(log_msg, '(A, F15.10)') "  er:", er
         call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, 3F15.10)') " delta_der:", delta_der
+        call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, F15.10)') " sum delta_der:", sum(delta_der)
+        call global_logger%log_warning(log_msg)
         write(log_msg, '(A, F15.10)') "  forces(1, 3):", forces(1, 3)
         call global_logger%log_warning(log_msg)
 
     ! Atom 2 jiggled
         delta_ser = (/delta_d_(3, 1), d_(2), delta_d_(4, 1)/)
         call comp_pe(delta_ser, delta_er, delta_der)
-        forces(2, 1) = (delta_er - er) / delta
+        forces(2, 1) = - (delta_er - er) / delta
 
         !write(log_msg, '(A, T35, F7.2, F10.2, F8.2)') "Bx", delta_ser(1), delta_ser(2), delta_ser(3)
         write(log_msg, '(A)') "Bx"
@@ -291,12 +307,16 @@ contains
         call global_logger%log_warning(log_msg)
         write(log_msg, '(A, F15.10)') "  er:", er
         call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, 3F15.10)') " delta_der:", delta_der
+        call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, F15.10)') " sum delta_der:", sum(delta_der)
+        call global_logger%log_warning(log_msg)
         write(log_msg, '(A, F15.10)') "  forces(2, 1):", forces(2, 1)
         call global_logger%log_warning(log_msg)
 
         delta_ser = (/delta_d_(3, 2), d_(2), delta_d_(4, 2)/)
         call comp_pe(delta_ser, delta_er, delta_der)
-        forces(2, 2) = (delta_er - er) / delta
+        forces(2, 2) = - (delta_er - er) / delta
 
         write(log_msg, '(A, T35, F7.2, F10.2, F8.2)') "By", delta_ser(1), delta_ser(2), delta_ser(3)
         call global_logger%log_warning(log_msg)
@@ -306,12 +326,16 @@ contains
         call global_logger%log_warning(log_msg)
         write(log_msg, '(A, F15.10)') "  er:", er
         call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, 3F15.10)') " delta_der:", delta_der
+        call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, F15.10)') " sum delta_der:", sum(delta_der)
+        call global_logger%log_warning(log_msg)
         write(log_msg, '(A, F15.10)') "  forces(2, 2):", forces(2, 2)
         call global_logger%log_warning(log_msg)
 
         delta_ser = (/delta_d_(3, 3), d_(2), delta_d_(4, 3)/)
         call comp_pe(delta_ser, delta_er, delta_der)
-        forces(2, 3) = (delta_er - er) / delta
+        forces(2, 3) = - (delta_er - er) / delta
 
         write(log_msg, '(A, T35, F7.2, F10.2, F8.2)') "Bz", delta_ser(1), delta_ser(2), delta_ser(3)
         call global_logger%log_warning(log_msg)
@@ -320,6 +344,10 @@ contains
         write(log_msg, '(A, F15.10)') "  delta_er:", delta_er
         call global_logger%log_warning(log_msg)
         write(log_msg, '(A, F15.10)') "  er:", er
+        call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, 3F15.10)') " delta_der:", delta_der
+        call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, F15.10)') " sum delta_der:", sum(delta_der)
         call global_logger%log_warning(log_msg)
         write(log_msg, '(A, F15.10)') "  forces(2, 3):", forces(2, 3)
         call global_logger%log_warning(log_msg)
@@ -338,13 +366,17 @@ contains
         call global_logger%log_warning(log_msg)
         write(log_msg, '(A, F15.10)') "  er:", er
         call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, 3F15.10)') " delta_der:", delta_der
+        call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, F15.10)') " sum delta_der:", sum(delta_der)
+        call global_logger%log_warning(log_msg)
         write(log_msg, '(A, F15.10)') "  forces(3, 1):", forces(3, 1)
         call global_logger%log_warning(log_msg)
 
       ! y
         delta_ser = (/d_(1), delta_d_(5, 2), delta_d_(6, 2)/)
         call comp_pe(delta_ser, delta_er, delta_der)
-        forces(3, 2) = (delta_er - er) / delta
+        forces(3, 2) = - (delta_er - er) / delta
 
         write(log_msg, '(A, T35, F7.2, F10.2, F8.2)') "Cy", delta_ser(1), delta_ser(2), delta_ser(3)
         call global_logger%log_warning(log_msg)
@@ -354,13 +386,17 @@ contains
         call global_logger%log_warning(log_msg)
         write(log_msg, '(A, F15.10)') "  er:", er
         call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, 3F15.10)') " delta_der:", delta_der
+        call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, F15.10)') " sum delta_der:", sum(delta_der)
+        call global_logger%log_warning(log_msg)
         write(log_msg, '(A, F15.10)') "  forces(3, 2):", forces(3, 2)
         call global_logger%log_warning(log_msg)
 
       ! z
         delta_ser = (/d_(1), delta_d_(5, 3), delta_d_(6, 3)/)
         call comp_pe(delta_ser, delta_er, delta_der)
-        forces(3, 3) = (delta_er - er) / delta
+        forces(3, 3) = - (delta_er - er) / delta
 
         write(log_msg, '(A, T35, F7.2, F10.2, F8.2)') "Cz", delta_ser(1), delta_ser(2), delta_ser(3)
         call global_logger%log_warning(log_msg)
@@ -370,6 +406,10 @@ contains
         call global_logger%log_warning(log_msg)
         write(log_msg, '(A, F15.10)') "  er:", er
         call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, 3F15.10)') " delta_der:", delta_der
+        call global_logger%log_warning(log_msg)
+        write(log_msg, '(A, F15.10)') " sum delta_der:", sum(delta_der)
+        call global_logger%log_warning(log_msg)
         write(log_msg, '(A, F15.10)') "  forces(3, 3):", forces(3, 3)
         call global_logger%log_warning(log_msg)
 
@@ -377,6 +417,9 @@ contains
             write(log_msg, '(A, I0, 3F15.10)') "Atom:", atom_i, forces(atom_i, :)
             call global_logger%log_warning(log_msg)
         end do
+
+        write(log_msg, '(A, 3F15.10)') "Total Force: ", sum(forces, dim=1)
+        call global_logger%log_warning(log_msg)
 
         ! DONE!
         write(log_msg, '(A, F15.10)') "----- END compute_forces"
