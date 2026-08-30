@@ -37,7 +37,7 @@ visualize them through a molecular visualize (e.g.,
 2. https://recorder.google.com/234570c9-b3eb-49eb-87f5-a2d1ac9dcce6
 
 ### Initial Conditions
-I am starting with the following initial conditions (in atoms.dat):
+I am starting with the following initial conditions (in data/reactive.dat):
 
 ```
 6000 1.0                                     ! number of iterations, tau
@@ -45,7 +45,7 @@ I am starting with the following initial conditions (in atoms.dat):
                                              ! mass, location xyz, velocity xyz
 1.0080 -10.0  0.0  0.0  1.0  0.0  0.0        ! m,    x, y, z,      vx, vy, vz
 1.0080  10.0  0.0  0.0  0.0  0.0  0.0        ! m,    x, y, z,      vx, vy, vz
-1.0080 10.74  0.0  0.0  0.0  0.0  0.0        ! m,    x, y, z,      vx, vy, vz
+1.0080 11.40065  0.0  0.0  0.0  0.0  0.0        ! m,    x, y, z,      vx, vy, vz
 ```
 
 ### RUN

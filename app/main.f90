@@ -20,7 +20,7 @@ program main
     ! For requesting xyz file output
     LOGICAL :: XYZ = .TRUE.
     CHARACTER(len=32) :: arg
-    CHARACTER(len=32) :: file_name = "data/atoms.dat"
+    CHARACTER(len=32) :: file_name = "data/reactive.dat"
     !integer :: arg_len
     !integer :: status
     real(KIND=wp), DIMENSION(:, :), ALLOCATABLE :: x, v, f, fnext
