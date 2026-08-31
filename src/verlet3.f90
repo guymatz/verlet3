@@ -1,10 +1,9 @@
 module verlet3
 
-    ! use kinds, ONLY: wp => dp
+    use kinds, ONLY: wp => dp
     use jpca15
     use stdlib_logger
-    !use,intrinsic :: iso_fortran_env, only : stderr=>ERROR_UNIT
-    ! implicit none
+    implicit none
     !  CAN I HAVE PUBLIC / PRIVATE with tests?!
     ! private :: eudist, eudist_with_delta, get_ser, get_delta_ser
     ! public :: verlet3_init, compute_force
@@ -13,6 +12,7 @@ module verlet3
 
 contains
 
+    ! Mostly for configuring logging
     subroutine verlet3_init(verbose)
         implicit none
         logical, intent(in) :: verbose
@@ -25,6 +25,7 @@ contains
         call global_logger%log_information("Verlet has been Initialized")
     end subroutine verlet3_init
 
+    ! Calculates Euclidean distance between two 3D points
     real(KIND=wp) function eudist(p1, p2) result(dist)
         use kinds, ONLY: wp => dp
         implicit none
@@ -35,8 +36,8 @@ contains
         dist = SQRT( (p1(1) - p2(1))**2 + (p1(2) - p2(2))**2 + (p1(3) - p2(3))**2)
     end function eudist
 
+    !  Returns the distances between pairs of 3 points
     subroutine get_ser(p1, p2, p3, ser)
-        !  Returns the distances between pairs of points
         use kinds, ONLY: wp => dp
         implicit none
         ! Three points
@@ -53,7 +54,6 @@ contains
         write(log_msg, '(A, 3F12.5)') "P3 in get_ser:  ", p3
         call global_logger%log_warning(log_msg)
 
-        !ser(1) = eudist(p1, p2)
         ser(1) = eudist(p1, p2)
         ser(2) = eudist(p1, p3)
         ser(3) = eudist(p2, p3)
@@ -61,8 +61,8 @@ contains
         call global_logger%log_warning(log_msg)
     end subroutine get_ser
 
+    ! Returns the distances between pairs of 3 points, with a delta added in each dimension
     subroutine get_delta_ser(pts, delta, ser)
-        !  Returns the distances between pairs of points, with a delta added in each dimension
         use kinds, ONLY: wp => dp
         implicit none
         ! points
@@ -81,6 +81,7 @@ contains
         end do
     end subroutine get_delta_ser
 
+    ! Returns the distance between a pair of points, with a delta added in each dimension
     real(KIND=wp) function eudist_with_delta(p1, p2, delta, dimn) result(dist)
         ! delta_d_(1, dimn) = eudist_with_delta(points(1, :), points(2, :), delta, dimn)
         use kinds, ONLY: wp => dp
@@ -98,30 +99,47 @@ contains
         ! Distance to return
         !!!!!   NOT Adding delta to second atom.  Only the first
         dist = eudist(p1_delta, p2)
-
-        ! write(log_msg, '(A)') "   -------------"
-        ! call global_logger%log_warning(log_msg)
-        write(log_msg, '(A, I0)') "eudist_with_delta: Dim: ", dimn
-        call global_logger%log_warning(log_msg)
-        write(log_msg, '(A, 3F15.5)') "   ******** p1+ :", p1_delta
-        call global_logger%log_warning(log_msg)
-        write(log_msg, '(A, 3F15.5)') "   ******** p2:  ", p2
-        call global_logger%log_warning(log_msg)
-        write(log_msg, '(A, F10.5, A, F10.5)') "   ******** p1: ", p1(dimn), ", p1_d: ", p1_delta(dimn)
-        call global_logger%log_warning(log_msg)
-        write(log_msg, '(A, F15.5)') "   ******** dist: ", dist
-        call global_logger%log_warning(log_msg)
-        write(log_msg, '(A)') "   -------------"
-        call global_logger%log_warning(log_msg)
-
     end function eudist_with_delta
 
-    ! points = x,y,z coords of each point
+    function fact(n) result(f)
+        integer :: i, n, f
+        do i = 1, n
+            f = f + i
+        end do
+    end function fact
+
+    subroutine get_all_eudists_with_delta(points, delta, dists)
+        integer :: atom_pair_ctr, atom_1, atom_2, dimn
+        real(KIND=wp), intent(in) :: delta
+        real(KIND=wp), dimension(3, 3), intent(in) :: points
+        real(KIND=wp), dimension(6, 3), intent(out) :: dists
+        real(KIND=wp) :: tmp
+
+        write(log_msg, '(A)') "IN get_all_eudists_with_delta"
+        call global_logger%log_warning(log_msg)
+        
+        atom_pair_ctr = 0
+        do atom_1 = 1, size(points, 1)
+            do atom_2 = 1, size(points, 1)
+                if (atom_1 == atom_2) then
+                    ! only compute distances for pairs
+                    cycle
+                end if
+                atom_pair_ctr = atom_pair_ctr + 1
+                do dimn = 1, size(points, 2)
+                    dists(atom_pair_ctr, dimn) = eudist_with_delta(points(atom_1, :), points(atom_2, :), delta, dimn)
+                end do
+            end do
+        end do
+    end subroutine get_all_eudists_with_delta
+
+    ! Uses Velocity Verlet to compute the force on each atom and in each x,y,z direction
     subroutine compute_force(points, delta, forces)
       ! vars
         use kinds, ONLY: wp => dp
         implicit none
         ! IN
+        ! points = x,y,z coords of each point
         real(KIND=wp), DIMENSION(3, 3), intent(in) :: points
         real(KIND=wp), intent(in) :: delta
         ! OUT
@@ -140,20 +158,13 @@ contains
         ! It's 2D so that we can store distances between atoms in all dimensions
         real(KIND=wp), DIMENSION(6, 3) :: delta_d_
         ! for looping
-        integer :: dimn, atom_i
+        integer :: dimn, atom_i, atom_pair_ctr, atom_1, atom_2
 
       ! meat
         write(log_msg, '(A, F5.1)') "----- START compute_forces"
         call global_logger%log_warning(log_msg)
 
       ! Step 1 of calculating forces: - get euclidean distances between points
-        ! write(log_msg, '(A)') "points: "
-        ! call global_logger%log_warning(log_msg)
-        ! do atom_i = 1, 3, 1
-        !     write(log_msg, '(A, I0, A, 3F5.1)') "    ", atom_i, ": ", points(atom_i, :)
-        !     call global_logger%log_warning(log_msg)
-        ! end do
-
         call get_ser(points(1, :), points(2, :), points(3, :), d_)
         write(log_msg, '(A, 3F5.1)') "    DIST: ", d_
         call global_logger%log_warning(log_msg)
@@ -173,49 +184,38 @@ contains
         call global_logger%log_warning(log_msg)
 
       ! Step 3 of calculating forces: - get euclidean distances between points + delta
-        ! do dimn = 1, 3
-        !     delta_d_(1, dimn) = eudist_with_delta(points(1, :), points(2, :), delta, dimn)
-        !     write(log_msg, '(A, I0, A, F5.1)') "Distance between A & B in dim ", dimn,":", delta_d_(1, dimn)
-        !     call global_logger%log_warning(log_msg)
-        !     delta_d_(2, dimn) = eudist_with_delta(points(1, :), points(3, :), delta, dimn)
-        !     write(log_msg, '(A, I0, A, F5.1)') "Distance between A & C in dim ", dimn,":", delta_d_(2, dimn)
-        !     call global_logger%log_warning(log_msg)
-        !     delta_d_(3, dimn) = eudist_with_delta(points(2, :), points(3, :), delta, dimn)
-        !     write(log_msg, '(A, I0, A, F5.1)') "Distance between B & C in dim ", dimn,":", delta_d_(3, dimn)
-        !     call global_logger%log_warning(log_msg)
-        ! end do
+        ! Loop through axes of pairs of points to get all Euclidean distances between pairs,
+        ! with a delta added in each dimension
 
-        ! Atom A-B xyz
-        delta_d_(1, 1) = eudist_with_delta(points(1, :), points(2, :), delta, 1)
-        delta_d_(1, 2) = eudist_with_delta(points(1, :), points(2, :), delta, 2)
-        delta_d_(1, 3) = eudist_with_delta(points(1, :), points(2, :), delta, 3)
-        ! Atom A-C xyz
-        delta_d_(2, 1) = eudist_with_delta(points(1, :), points(3, :), delta, 1)
-        delta_d_(2, 2) = eudist_with_delta(points(1, :), points(3, :), delta, 2)
-        delta_d_(2, 3) = eudist_with_delta(points(1, :), points(3, :), delta, 3)
-        ! Atom B-A xyz
-        delta_d_(3, 1) = eudist_with_delta(points(2, :), points(1, :), delta, 1)
-        delta_d_(3, 2) = eudist_with_delta(points(2, :), points(1, :), delta, 2)
-        delta_d_(3, 3) = eudist_with_delta(points(2, :), points(1, :), delta, 3)
-        ! Atom B-C xyz
-        delta_d_(4, 1) = eudist_with_delta(points(2, :), points(3, :), delta, 1)
-        delta_d_(4, 2) = eudist_with_delta(points(2, :), points(3, :), delta, 2)
-        delta_d_(4, 3) = eudist_with_delta(points(2, :), points(3, :), delta, 3)
-        ! Atom C-A xyz
-        delta_d_(5, 1) = eudist_with_delta(points(3, :), points(1, :), delta, 1)
-        delta_d_(5, 2) = eudist_with_delta(points(3, :), points(1, :), delta, 2)
-        delta_d_(5, 3) = eudist_with_delta(points(3, :), points(1, :), delta, 3)
-        ! Atom C-B xyz
-        delta_d_(6, 1) = eudist_with_delta(points(3, :), points(2, :), delta, 1)
-        delta_d_(6, 2) = eudist_with_delta(points(3, :), points(2, :), delta, 2)
-        delta_d_(6, 3) = eudist_with_delta(points(3, :), points(2, :), delta, 3)
+        do atom_pair_ctr = 1, size(delta_d_, 1)
+            delta_d_(atom_pair_ctr, :) = (/0.0, 0.0, 0.0/)
+        end do
 
-        do atom_i = 1, 6, 1
-            write(log_msg, '(A, I0, 3F5.1)') "Delta D: ", atom_i, delta_d_(atom_i, :)
+        call get_all_eudists_with_delta(points, delta, delta_d_)
+
+        write(log_msg, '(A)') "JUST worked on delta_d_"
+        call global_logger%log_warning(log_msg)
+
+        atom_pair_ctr = 0
+        do atom_1 = 1, size(points, 1)
+            atom_pair_ctr = atom_pair_ctr + 1
+            do atom_2 = 1, size(points, 1)
+                if (atom_1 == atom_2) then
+                    cycle
+                end if
+                do dimn = 1, size(points, 2)
+                    write(log_msg, '(A, I0, A, I0, A, I0, A, F20.10)') "Atom 1 & 2 - dimn: ", atom_1, " - ", atom_2, " - ", dimn, ": ", delta_d_(atom_pair_ctr, dimn) 
+                    call global_logger%log_warning(log_msg)
+                end do
+            end do
+        end do
+
+        do atom_i = 1, 6
+            write(log_msg, '(A, I0, 3F10.5)') "Delta D 2: ", atom_i, delta_d_(atom_i, :)
             call global_logger%log_warning(log_msg)
         end do
 
-        do atom_i = 1, 3, 1
+        do atom_i = 1, 3
             write(log_msg, '(A, I0, 3F5.1)') "      D: ", atom_i, d_(atom_i)
             call global_logger%log_warning(log_msg)
         end do
@@ -414,7 +414,7 @@ contains
         call global_logger%log_warning(log_msg)
 
         do atom_i = 1, 3, 1
-            write(log_msg, '(A, I0, 3F15.10)') "Atom:", atom_i, forces(atom_i, :)
+            write(log_msg, '(A, I0, 3F15.10)') "Force Atom:", atom_i, forces(atom_i, :)
             call global_logger%log_warning(log_msg)
         end do
 
