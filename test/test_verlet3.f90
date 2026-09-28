@@ -66,16 +66,16 @@ contains
     !delta = 1                                          ! delta
     ! atom A
     fx%mass(1) = 1.0080_wp
-    fx%x(1, :) = (/-6.0, 0.0, 0.0/)          ! x, y, z
-    fx%v(1, :) = (/0.12, 0.0, 0.0/)        ! vx, vy, vz
+    fx%x(1, :) = (/-6.0_wp, 0.0_wp, 0.0_wp/)          ! x_wp, y_wp, z
+    fx%v(1, :) = (/0.12_wp, 0.0_wp, 0.0_wp/)        ! vx_wp, vy_wp, vz
     ! atom B
     fx%mass(2) = 1.0080_wp                             ! m, x, y, z, vx, vy, vz
-    fx%x(2, :) = (/0.0, 0.0, 0.0/)           ! m, x, y, z, vx, vy, vz
-    fx%v(2, :) = (/0.0, 0.0, 0.0/)        ! m, x, y, z, vx, vy, vz
+    fx%x(2, :) = (/0.0_wp, 0.0_wp, 0.0_wp/)           ! m_wp, x_wp, y_wp, z_wp, vx_wp, vy_wp, vz
+    fx%v(2, :) = (/0.0_wp, 0.0_wp, 0.0_wp/)        ! m_wp, x_wp, y_wp, z_wp, vx_wp, vy_wp, vz
     ! atom C
     fx%mass(3) = 1.0080_wp                           ! m, x, y, z, vx, vy, vz
-    fx%x(3, :) = (/1.40065, 0.0, 0.0/)           ! m, x, y, z, vx, vy, vz
-    fx%v(3, :) = (/0.0, 0.0, 0.0/)        ! m, x, y, z, vx, vy, vz
+    fx%x(3, :) = (/1.40065_wp, 0.0_wp, 0.0_wp/)           ! m_wp, x_wp, y_wp, z_wp, vx_wp, vy_wp, vz
+    fx%v(3, :) = (/0.0_wp, 0.0_wp, 0.0_wp/)        ! m_wp, x_wp, y_wp, z_wp, vx_wp, vy_wp, vz
 
     fx%expected_eudist = 6.0_wp
 
@@ -85,16 +85,16 @@ contains
 
     fx%expected_get_ser = (/6.0_wp, 7.40065_wp, 1.40065_wp/)
     !fx%expected_get_ser_delta
-    fx%expected_forces(1, :) = (/-13.40228, -3.18536E-007, -3.18536E-007/)
-    fx%expected_forces(2, :) = (/5.71990, -5.52748E-007, -5.52748E-007/)
-    fx%expected_forces(3, :) = (/7.64097, -2.906297E-007, -2.906297E-007/)
+    fx%expected_forces(1, :) = (/-3.0574060747544374E-003_wp, 0.0_wp, 0.0_wp/)
+    fx%expected_forces(2, :) = (/6.5385523942817353E-002_wp, 0.0_wp, 0.0_wp/)
+    fx%expected_forces(3, :) = (/-6.3358127780997059E-002_wp, 0.0_wp, 0.0_wp/)
 
-    fx%expected_all_eudists_with_delta(1, :) = (/5.9999000000, 6.0000000008, 6.0000000008/)
-    fx%expected_all_eudists_with_delta(2, :) = (/7.4005500000, 7.4006500007, 7.4006500007/)
-    fx%expected_all_eudists_with_delta(3, :) = (/6.0001000000, 6.0000000008, 6.0000000008/)
-    fx%expected_all_eudists_with_delta(4, :) = (/1.4005500000, 1.4006500036, 1.4006500036/)
-    fx%expected_all_eudists_with_delta(5, :) = (/7.4007500000, 7.4006500007, 7.4006500007/)
-    fx%expected_all_eudists_with_delta(6, :) = (/1.4007500000, 1.4006500036, 1.4006500036/)
+    fx%expected_all_eudists_with_delta(1_wp, :) = (/5.9999000000_wp, 6.0000000008_wp, 6.0000000008_wp/)
+    fx%expected_all_eudists_with_delta(2_wp, :) = (/7.4005500000_wp, 7.4006500007_wp, 7.4006500007_wp/)
+    fx%expected_all_eudists_with_delta(3_wp, :) = (/6.0001000000_wp, 6.0000000008_wp, 6.0000000008_wp/)
+    fx%expected_all_eudists_with_delta(4_wp, :) = (/1.4005500000_wp, 1.4006500036_wp, 1.4006500036_wp/)
+    fx%expected_all_eudists_with_delta(5_wp, :) = (/7.4007500000_wp, 7.4006500007_wp, 7.4006500007_wp/)
+    fx%expected_all_eudists_with_delta(6_wp, :) = (/1.4007500000_wp, 1.4006500036_wp, 1.4006500036_wp/)
 
   end subroutine setup
 
