@@ -8,6 +8,7 @@ mols=(2)
 for i in $(seq $#mols); do
 mol_name="reactive-${mols[$i]}.xyz"
 mol_name="gemini-${mols[$i]}.xyz"
+mol_name=${1:=unknown}
 mol_num=$((i - 1))
 echo "#$mol_name"
 echo mol delete $mol_num
