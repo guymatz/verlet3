@@ -202,18 +202,20 @@ program main
     write(log_msg, '(A)') "initial output for XYZ data file -"
     ! CALL global_logger%log_warning(log_msg)
     ! https://en.wikipedia.org/wiki/XYZ_file_format
-    if (XYZ) then
-        print *, num_atoms
-        print *, "Initial Positions"
-        print *, "atom1", x(1, :)
-        print *, "atom2", x(2, :)
-        print *, "atom3", x(3, :)
-    end if
 
 ! Steps here found Chap 7, on p. 61 of ``Chemistry at the Fronteir...'' by Rampino
   ! Step 0: Calculate initial force on all particles
     ! Initial Force for particles
     call compute_force(x, delta, f)
+
+    if (XYZ) then
+        print *, num_atoms
+        print *, "Initial Positions: forces - ", f(1, 1), f(2, 1), f(3, 1)
+        print *, "atom1", x(1, :)
+        print *, "atom2", x(2, :)
+        print *, "atom3", x(3, :)
+    end if
+
     write(log_msg, '(A)') " ***** Initial Positions / Forces: "
     ! CALL global_logger%log_warning(log_msg)
     do i = 1, size(x, 1), 1
@@ -285,10 +287,10 @@ program main
             end do
         end do
 
-        ! Print out the coordinates in XYZ format, if requested (with -x)
+        ! Print out the coordinates in XYZ format, if not quieted (with -x)
         if (XYZ) then
             print *, num_atoms
-            print *, "step:", k
+            print *, "step:", k, " - forces = ", fnext(1, 1), fnext(2, 1), fnext(3, 1)
             do atom_num = 1, size(x, 1)
                 write(*, '(A, I0, A5, 3F20.10)') "atom", atom_num, "", x(atom_num, :)
             end do

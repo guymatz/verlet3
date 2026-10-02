@@ -1,0 +1,8 @@
+6000 0.01                                       ! nk, tau (was 0.2)
+0.001                                        ! delta
+3                                            ! n, number of atoms
+1.0080 -6.0  0.0  0.0  1.0  0.0  0.0        ! m, x, y, z, vx, vy, vz
+1.0080  0.0  0.0  0.0  0.0  0.0  0.0        ! m, x, y, z, vx, vy, vz 
+1.0080 1.40065  0.0  0.0  0.0  0.0  0.0     ! m, x, y, z, vx, vy, vz 
+
+Distance between H atoms in H_2 molecule is 0.7412 angstroms == 1.400665 bohr

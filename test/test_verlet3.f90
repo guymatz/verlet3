@@ -57,7 +57,7 @@ contains
 
   !  for logging
     call global_logger%configure(indent=.true., max_width=100)
-    call global_logger%configure(level = NONE_LEVEL)
+    call global_logger%configure(level = ALL_LEVEL)
 
   ! Initialization
     fx%tol = 0.0001_wp
@@ -85,9 +85,9 @@ contains
 
     fx%expected_get_ser = (/6.0_wp, 7.40065_wp, 1.40065_wp/)
     !fx%expected_get_ser_delta
-    fx%expected_forces(1, :) = (/-3.0574060747544374E-003_wp, 0.0_wp, 0.0_wp/)
-    fx%expected_forces(2, :) = (/6.5385523942817353E-002_wp, 0.0_wp, 0.0_wp/)
-    fx%expected_forces(3, :) = (/-6.3358127780997059E-002_wp, 0.0_wp, 0.0_wp/)
+    fx%expected_forces(1, :) = (/-3.0574060747544374E-003_wp, 0.000000018813718_wp, 0.0000000188137180_wp/)
+    fx%expected_forces(2, :) = (/6.5385523942817353E-002_wp, -0.000002403586340_wp, -0.000002403586340_wp/)
+    fx%expected_forces(3, :) = (/-6.3358127780997059E-002_wp, 0.000002365430213_wp, 0.000002365430213_wp/)
 
     fx%expected_all_eudists_with_delta(1_wp, :) = (/5.9999000000_wp, 6.0000000008_wp, 6.0000000008_wp/)
     fx%expected_all_eudists_with_delta(2_wp, :) = (/7.4005500000_wp, 7.4006500007_wp, 7.4006500007_wp/)
@@ -201,7 +201,7 @@ contains
 
     do i = 1, size(fx%forces, 1)
         do j = 1, size(fx%forces(i, :), 1)
-            write(fx%log_msg, '(A, I0, I0, A, F20.5, A, F20.5)') "test_compute_force: ", i, j, " - ", fx%forces(i, j), " =? ", fx%expected_forces(i, j)
+            write(fx%log_msg, '(A, I0, I0, A, F20.15, A, F20.15)') "test_compute_force: ", i, j, " - ", fx%forces(i, j), " =? ", fx%expected_forces(i, j)
             CALL global_logger%log_warning(fx%log_msg)
             call check(error, fx%expected_forces(i, j), fx%forces(i, j), thr=fx%tol)
         end do
